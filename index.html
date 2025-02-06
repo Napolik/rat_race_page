@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Крисині біга IV</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    input {
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    .total {
+      font-weight: bold;
+      color: #d9534f;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Крисині біга IV - Розрахунок доходів і витрат</h2>
+
+  <h3>Доходи</h3>
+  <table>
+    <tr>
+      <th>Джерело доходу</th>
+      <th>Сума ($)</th>
+    </tr>
+    <tr>
+      <td>Активний дохід</td>
+      <td><input type="number" id="activeIncome" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td>Стипендія / другий дохід</td>
+      <td><input type="number" id="secondaryIncome" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td>Пасивний дохід</td>
+      <td><input type="number" id="passiveIncome" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td>Приріст пасивного доходу (%)</td>
+      <td><input type="number" id="passiveIncrease" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td>Дохід від курсів</td>
+      <td><input type="number" id="courseIncome" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td>Приріст доходу від курсів (%)</td>
+      <td><input type="number" id="courseIncrease" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td class="total">Загальний дохід</td>
+      <td class="total" id="totalIncome">0</td>
+    </tr>
+  </table>
+
+  <h3>Витрати</h3>
+  <table>
+    <tr>
+      <th>Стаття витрат</th>
+      <th>Сума ($)</th>
+    </tr>
+    <tr>
+      <td>Житло</td>
+      <td><input type="number" id="housing" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td>Харчування</td>
+      <td><input type="number" id="food" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td>Зв'язок, інтернет</td>
+      <td><input type="number" id="internet" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td>Проїзд</td>
+      <td><input type="number" id="transport" value="0" oninput="calculateTotal()"></td>
+    </tr>
+    <tr>
+      <td class="total">Загальні витрати</td>
+      <td class="total" id="totalExpenses">0</td>
+    </tr>
+  </table>
+
+  <h3>Кредити</h3>
+  <table>
+    <tr>
+      <th>Тип кредиту</th>
+      <th>Сума ($)</th>
+      <th>Річний відсоток (%)</th>
+      <th>Місячний платіж ($)</th>
+    </tr>
+    <tr>
+      <td>Банк</td>
+      <td><input type="number" id="bankLoan" value="0" oninput="calculateTotal()"></td>
+      <td>36</td>
+      <td id="bankPayment">0</td>
+    </tr>
+    <tr>
+      <td>Мікрокредит</td>
+      <td><input type="number" id="microLoan" value="0" oninput="calculateTotal()"></td>
+      <td>360</td>
+      <td id="microPayment">0</td>
+    </tr>
+  </table>
+
+  <h3>Сальдо на кінець місяця: <span id="balance">0</span> $</h3>
+</div>
+
+<script>
+  function calculateTotal() {
+    let activeIncome = parseFloat(document.getElementById('activeIncome').value) || 0;
+    let secondaryIncome = parseFloat(document.getElementById('secondaryIncome').value) || 0;
+    let passiveIncome = parseFloat(document.getElementById('passiveIncome').value) || 0;
+    let passiveIncrease = parseFloat(document.getElementById('passiveIncrease').value) || 0;
+    let courseIncome = parseFloat(document.getElementById('courseIncome').value) || 0;
+    let courseIncrease = parseFloat(document.getElementById('courseIncrease').value) || 0;
+
+    passiveIncome += passiveIncome * (passiveIncrease / 100);
+    let totalIncome = activeIncome + secondaryIncome + passiveIncome + courseIncome;
+    totalIncome += totalIncome * (courseIncrease / 100);
+    document.getElementById('totalIncome').textContent = totalIncome.toFixed(2);
+
+    let totalExpenses = ['housing', 'food', 'internet', 'transport'].reduce((sum, id) => sum + (parseFloat(document.getElementById(id).value) || 0), 0);
+    document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(2);
+
+    let bankPayment = (parseFloat(document.getElementById('bankLoan').value) || 0) * 0.03;
+    let microPayment = (parseFloat(document.getElementById('microLoan').value) || 0) * 0.3;
+    document.getElementById('bankPayment').textContent = bankPayment.toFixed(2);
+    document.getElementById('microPayment').textContent = microPayment.toFixed(2);
+
+    let balance = totalIncome - (totalExpenses + bankPayment + microPayment);
+    document.getElementById('balance').textContent = balance.toFixed(2);
+  }
+</script>
+</body>
+</html>
